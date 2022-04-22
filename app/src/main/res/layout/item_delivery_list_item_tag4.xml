@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutTags"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/delivery_item_tags_color_takeout_background"
+    android:layout_margin="@dimen/delivery_list_item_tags_margin"
+    android:padding="2dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="테이크아웃"
+        android:textColor="@color/delivery_item_tags_color_takeout_text"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

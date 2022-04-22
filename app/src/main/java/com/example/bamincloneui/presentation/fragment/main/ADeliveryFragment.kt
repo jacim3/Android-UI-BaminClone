@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +21,10 @@ import com.example.bamincloneui.data.model.BannerItem
 import com.example.bamincloneui.databinding.FragmentADeliveryBinding
 import com.example.bamincloneui.presentation.adapters.delivery.BannerPagerRecyclerAdapter
 import com.example.bamincloneui.presentation.adapters.delivery.GridRecyclerViewAdapter
+import com.example.bamincloneui.presentation.adapters.delivery.DeliveryItemRecyclerViewAdapter
 import com.example.bamincloneui.presentation.adapters.delivery.SubBannerRecyclerAdapter
 import com.example.bamincloneui.presentation.fakeBannerList
+import com.example.bamincloneui.presentation.fakeDeliveryItemList
 import com.example.bamincloneui.presentation.fakeGridItemList
 import com.example.bamincloneui.presentation.fakeSubBannerList
 import com.example.bamincloneui.presentation.fragment.main.viewmodels.ADeliveryViewModel
@@ -50,7 +53,8 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
 
     private lateinit var bannerAdapter: BannerPagerRecyclerAdapter
     private lateinit var subBannerAdapter: SubBannerRecyclerAdapter
-    private lateinit var gridRecyclerViewAdapter: GridRecyclerViewAdapter
+    private lateinit var gridMenuRecyclerViewAdapter: GridRecyclerViewAdapter
+    private lateinit var deliveryItemRecyclerViewAdapter: DeliveryItemRecyclerViewAdapter
 
     private var totalBannerCount = 0
     private var totalSubBannerCount = 0
@@ -83,10 +87,14 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         viewModel.bannerItemList.value = fakeBannerList
         viewModel.subBannerItemList.value = fakeSubBannerList
         viewModel.gridMenuItems.value = fakeGridItemList
+        viewModel.deliveryItemList.value = fakeDeliveryItemList
+
 
         initBannerPager()
         initSubBannerPager()
         initGridMenuRecyclerView()
+        initDeliveryItemListRecyclerView()
+
 
         viewModel.bannerItemList.observe(viewLifecycleOwner) {
             bannerAdapter.setImageList(it)
@@ -96,12 +104,16 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             subBannerAdapter.setSubBannerItems(it)
         }
 
-        viewModel.gridMenuItems.observe(viewLifecycleOwner){
-            gridRecyclerViewAdapter.setGridItems(it)
+        viewModel.gridMenuItems.observe(viewLifecycleOwner) {
+            gridMenuRecyclerViewAdapter.setGridItems(it)
         }
 
         viewModel.bannerItemPosition.observe(viewLifecycleOwner) {
             binding!!.bannerPager.currentItem = it
+        }
+
+        viewModel.deliveryItemList.observe(viewLifecycleOwner){
+            deliveryItemRecyclerViewAdapter.setListItem(it)
         }
 
         autoScrollBannerItem()
@@ -125,9 +137,10 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
                 isBannerAutoPaging = true
 
                 Handler(Looper.getMainLooper()).post {
-                    binding!!.textViewBannerCursor.text = "${position+1} / 5 "
+                    binding!!.textViewBannerCursor.text = "${position + 1} / 5 "
                 }
             }
+
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -135,6 +148,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
             }
+
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
             }
@@ -153,11 +167,21 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         }
     }
 
-    private fun initGridMenuRecyclerView(){
+    private fun initGridMenuRecyclerView() {
         binding!!.recyclerViewGridMenus.apply {
-            gridRecyclerViewAdapter = GridRecyclerViewAdapter()
-            layoutManager = GridLayoutManager(requireContext(), Common.DELIVERY_FRAGMENT_GRID_MENU_ROW)
-            adapter = gridRecyclerViewAdapter
+            gridMenuRecyclerViewAdapter = GridRecyclerViewAdapter()
+            layoutManager =
+                GridLayoutManager(requireContext(), Common.DELIVERY_FRAGMENT_GRID_MENU_ROW)
+            adapter = gridMenuRecyclerViewAdapter
+        }
+    }
+
+
+    private fun initDeliveryItemListRecyclerView(){
+        binding!!.recyclerViewDeliveryItem.apply {
+            deliveryItemRecyclerViewAdapter = DeliveryItemRecyclerViewAdapter()
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = deliveryItemRecyclerViewAdapter
         }
     }
 
@@ -167,8 +191,6 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             whenResumed {
                 while (isBannerAutoPaging) {
                     delay(3000)
-
-
                     viewModel.bannerItemPosition.value =
                         viewModel.bannerItemPosition.value?.plus(1)?.rem(5)
                 }
@@ -200,6 +222,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
     }
 
     override fun onBannerItemClicked(bannerItem: BannerItem) {
@@ -207,6 +230,5 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
     }
 
     override fun onClick(p0: View?) {
-
     }
 }

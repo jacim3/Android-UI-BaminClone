@@ -7,4 +7,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="delivery_item_tags_color_coupon_text">#FF5F36</color>
+    <color name="delivery_item_tags_color_coupon_background">#FA947A</color>
+    <color name="delivery_item_tags_color_takeout_text">#222222</color>
+    <color name="delivery_item_tags_color_takeout_background">#474747</color>
+    <color name="delivery_item_tags_color_reservation_text">#222222</color>
+    <color name="delivery_item_tags_color_reservation_background">#474747</color>
+    <color name="delivery_item_tags_color_new_text">#F14B4B</color>
+    <color name="delivery_item_tags_color_new_background">#FF8A8A</color>
+
+    <color name="delivery_item_desc_color_label">#393939</color>
+    <color name="delivery_item_desc_color_text">#000000</color>
+    <color name="delivery_item_desc_color_seperator">#2E2E2E</color>
 </resources>

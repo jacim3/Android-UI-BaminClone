@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.bamincloneui.R
 import com.example.bamincloneui.data.model.BannerItem
 import com.example.bamincloneui.data.model.DeliveryGridItem
+import com.example.bamincloneui.data.model.DeliveryListItem
 import com.example.bamincloneui.data.model.SubBannerItem
 
 class ADeliveryViewModel : ViewModel(){
@@ -31,5 +32,7 @@ class ADeliveryViewModel : ViewModel(){
     }
 
     val gridMenuItems = MutableLiveData<List<DeliveryGridItem>>()
+
+    val deliveryItemList = MutableLiveData<List<DeliveryListItem>>()
 
 }
