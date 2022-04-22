@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayoutDescLabel"
+    android:id="@+id/linearLayoutDescMinPrice"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewDescLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:textColor="@color/delivery_item_desc_color_label"
         android:text="최소주문"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewDescMinPriceText"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="#000"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="11,000원"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:text="@string/delivery_item_desc_seperator"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

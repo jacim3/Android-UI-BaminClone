@@ -23,7 +23,7 @@ class DeliveryItemRecyclerViewAdapter :
     class ListItemViewHolder constructor(
         itemView: View,
         tagView: Array<View>,
-        descView: View
+        descView: Array<View>
     ) :
         RecyclerView.ViewHolder(itemView) {
 
@@ -51,16 +51,24 @@ class DeliveryItemRecyclerViewAdapter :
         val tagTakeOut: LinearLayoutCompat = tagView[3].findViewById(R.id.linearLayoutTags)
 
         // ---- descView
-        val descLabel: LinearLayoutCompat = descView.findViewById(R.id.linearLayoutDescLabel)
-        val descText: AppCompatTextView = descView.findViewById(R.id.textViewDescLabel)
+        val descMinPrice: LinearLayoutCompat = descView[0].findViewById(R.id.linearLayoutDescMinPrice)
+        val descMinPriceText: AppCompatTextView = descView[0].findViewById(R.id.textViewDescMinPriceText)
 
-/*        val descLabel: LinearLayoutCompat = descView[0].findViewById(R.id.linearLayoutDescLabel)
+        val descDeliveryTip: LinearLayoutCompat = descView[1].findViewById(R.id.linearLayoutDescDeliveryTip)
+        val descDeliveryTipText: AppCompatTextView = descView[1].findViewById(R.id.textViewDescDeliveryTipText)
+
+        val descDistance: LinearLayoutCompat = descView[2].findViewById(R.id.linearLayoutDistance)
+        val descDistanceText: AppCompatTextView = descView[2].findViewById(R.id.textViewDescDistanceText)
+
+/*
+        val descLabel: LinearLayoutCompat = descView[0].findViewById(R.id.linearLayoutDescLabel)
         val descLabelText: AppCompatTextView = descView[0].findViewById(R.id.textViewDescLabel)
 
         val descDetail: LinearLayoutCompat = descView[1].findViewById(R.id.linearLayoutDescDetail)
         val descDetailText: AppCompatTextView = descView[1].findViewById(R.id.textViewDescDetail)
 
-        val descSeperator: LinearLayoutCompat = descView[2].findViewById(R.id.linearLayoutDescSeperator)*/
+        val descSeperator: LinearLayoutCompat = descView[2].findViewById(R.id.linearLayoutDescSeperator)
+*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
@@ -78,10 +86,14 @@ class DeliveryItemRecyclerViewAdapter :
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_delivery_list_item_tag4, parent, false),
                 ),
-
+            arrayOf(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_delivery_list_item_desc1, parent, false)
-
+                    .inflate(R.layout.item_delivery_list_item_desc1, parent, false),
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_delivery_list_item_desc2, parent, false),
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_delivery_list_item_desc3, parent, false)
+            )
         )
     }
 
@@ -142,33 +154,23 @@ class DeliveryItemRecyclerViewAdapter :
 
                 // TODO 거리는 여기서 GPS 를 비교하여 처리
                 if (item.desc != null) {
-                    var count = 0
                     val currentKeys = item.desc.keys.toList()
                     for (i in currentKeys.indices) {
                         when(currentKeys[i]) {
                             "최소주문" -> {
-                                holder.descLabelText.text = "최소주문"
-                                holder.descDetailText.text = item.desc["최소주문"]
-                                holder.linearLayoutAreaDesc.addView(holder.descLabel)
-                                holder.linearLayoutAreaDesc.addView(holder.descDetail)
+                                holder.descMinPriceText.text = item.desc["최소주문"]
+                                holder.linearLayoutAreaDesc.addView(holder.descMinPrice)
                             }
                             "배달팁" -> {
-                                holder.descLabelText.text = "배달팁"
-                                holder.descDetailText.text = item.desc["배달팁"]
-                                holder.linearLayoutAreaDesc.removeView(holder.descLabel)
-                                holder.linearLayoutAreaDesc.removeView(holder.descDetail)
-                                holder.linearLayoutAreaDesc.addView(holder.descLabel)
-                                holder.linearLayoutAreaDesc.addView(holder.descDetail)
+                                holder.descDeliveryTipText.text = item.desc["배달팁"]
+                                holder.linearLayoutAreaDesc.addView(holder.descDeliveryTip)
                             }
                             else -> {
-                                
+
                             }
                         }
                     }
                 }
-
-
-
             }
         }
     }

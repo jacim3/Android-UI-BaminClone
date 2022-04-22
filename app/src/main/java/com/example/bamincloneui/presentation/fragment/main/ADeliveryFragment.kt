@@ -29,6 +29,8 @@ import com.example.bamincloneui.presentation.fakeGridItemList
 import com.example.bamincloneui.presentation.fakeSubBannerList
 import com.example.bamincloneui.presentation.fragment.main.viewmodels.ADeliveryViewModel
 import com.example.bamincloneui.presentation.interaction.BannerInteraction
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -89,12 +91,10 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         viewModel.gridMenuItems.value = fakeGridItemList
         viewModel.deliveryItemList.value = fakeDeliveryItemList
 
-
         initBannerPager()
         initSubBannerPager()
         initGridMenuRecyclerView()
         initDeliveryItemListRecyclerView()
-
 
         viewModel.bannerItemList.observe(viewLifecycleOwner) {
             bannerAdapter.setImageList(it)
@@ -112,9 +112,26 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             binding!!.bannerPager.currentItem = it
         }
 
-        viewModel.deliveryItemList.observe(viewLifecycleOwner){
+        viewModel.deliveryItemList.observe(viewLifecycleOwner) {
             deliveryItemRecyclerViewAdapter.setListItem(it)
         }
+
+        val tabTexts = arrayOf("배달팁 낮은 순", "기본순", "주문 많은 순", "별점 높은 순", "가까운 순", "찜 많은 순", "최소주문금액", "기타")
+
+        binding!!.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.e("asdfasdf", tab?.position.toString())
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                TODO("Not yet implemented")
+            }
+
+        })
 
         autoScrollBannerItem()
     }
@@ -177,7 +194,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
     }
 
 
-    private fun initDeliveryItemListRecyclerView(){
+    private fun initDeliveryItemListRecyclerView() {
         binding!!.recyclerViewDeliveryItem.apply {
             deliveryItemRecyclerViewAdapter = DeliveryItemRecyclerViewAdapter()
             layoutManager = LinearLayoutManager(requireContext())
@@ -222,7 +239,6 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
                     putString(ARG_PARAM2, param2)
                 }
             }
-
     }
 
     override fun onBannerItemClicked(bannerItem: BannerItem) {

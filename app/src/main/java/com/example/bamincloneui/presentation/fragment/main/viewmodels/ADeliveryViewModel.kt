@@ -21,15 +21,7 @@ class ADeliveryViewModel : ViewModel(){
         this.value = 0
     }
 
-    val subBannerItemList = MutableLiveData<List<SubBannerItem>>().apply {
-        listOf(
-            SubBannerItem(R.drawable.delivery_banner_example_1),
-            SubBannerItem(R.drawable.delivery_banner_example_2),
-            SubBannerItem(R.drawable.delivery_banner_example_3),
-            SubBannerItem(R.drawable.delivery_banner_example_4),
-            SubBannerItem(R.drawable.delivery_banner_example_5)
-        )
-    }
+    val subBannerItemList = MutableLiveData<List<SubBannerItem>>()
 
     val gridMenuItems = MutableLiveData<List<DeliveryGridItem>>()
 

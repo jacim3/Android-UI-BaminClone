@@ -4,11 +4,22 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.267" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_activity_selector.xml" value="0.1585" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_fragment_list_item_radius.xml" value="0.1915" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_fragment_sub_banner_item_radius.xml" value="0.2685" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_list_item_tags_radius_1.xml" value="0.22" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_list_item_tags_radius_2.xml" value="0.1855" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_list_item_tags_radius_3.xml" value="0.1855" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/delivery_list_item_tags_radius_4.xml" value="0.1855" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/fragment_delivery_banner_pager_text_radius.xml" value="0.169" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/fragment_delivery_list_item_inner_time_radius.xml" value="0.205" />
-        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/activity_delivery.xml" value="0.22" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.243" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/tab_background.xml" value="0.1685" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/tab_background_selected.xml" value="0.1635" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/tab_background_unselected.xml" value="0.1635" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/tab_indicator.xml" value="0.1685" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/drawable/tab_ripple.xml" value="0.1685" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/activity_delivery.xml" value="0.1" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/app_bar_main.xml" value="0.18020833333333333" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/content_main.xml" value="0.18020833333333333" />
@@ -24,9 +35,9 @@
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_banner.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_banner_sub.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_grid_item.xml" value="0.4466666666666667" />
-        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item.xml" value="0.5" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_desc.xml" value="0.4466666666666667" />
-        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_desc1.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_desc1.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_desc2.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_desc3.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_tag1.xml" value="0.4466666666666667" />
@@ -35,6 +46,7 @@
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_tag34.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_tag4.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_item_tags.xml" value="0.4466666666666667" />
+        <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_list_tab_layout.xml" value="0.28177083333333336" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/item_delivery_sub_banner.xml" value="0.1" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/itme_delivery_list_item.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/kjk89/AndroidStudioProjects/BaminCloneUI/app/src/main/res/layout/nav_header_main.xml" value="0.30572916666666666" />

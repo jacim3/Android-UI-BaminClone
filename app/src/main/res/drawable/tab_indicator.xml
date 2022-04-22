@@ -1,0 +1,13 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#D584D5">
+    <item>
+        <shape
+            android:shape="rectangle">
+            <!-- radius should be half of the desired TabLayout height -->
+            <corners
+                android:radius="60dp"/>
+            <!-- color of the selected tab -->
+            <solid android:color="#77D5FF"/>
+        </shape>
+    </item>
+</ripple>

@@ -14,13 +14,16 @@
 
     <dimen name="delivery_fragment_banner_item_height">150dp</dimen>
 
-    <dimen name="delivery_fragment_sub_banner_item_width">150dp</dimen>
-    <dimen name="delivery_fragment_sub_banner_item_height">100dp</dimen>
+    <dimen name="delivery_fragment_sub_banner_item_width">100dp</dimen>
+    <dimen name="delivery_fragment_sub_banner_item_height">75dp</dimen>
     <dimen name="delivery_fragment_sub_banner_item_margin">8dp</dimen>
     <dimen name="delivery_fragment_sub_banner_item_radius">0dp</dimen>
     <dimen name="delivery_fragment_grid_menus_height">350dp</dimen>
 
     <dimen name="item_delivery_list_item_image_margin">2dp</dimen>
     <dimen name="delivery_list_item_tags_margin">2dp</dimen>
+    <dimen name="delivery_list_item_tags_radius">6dp</dimen>
+    <dimen name="delivery_list_item_tags_padding">2dp</dimen>
+
 
 </resources>
