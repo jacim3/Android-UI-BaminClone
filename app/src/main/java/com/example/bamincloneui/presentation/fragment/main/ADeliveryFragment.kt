@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,18 +18,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.bamincloneui.constants.Common
 import com.example.bamincloneui.data.model.BannerItem
 import com.example.bamincloneui.databinding.FragmentADeliveryBinding
-import com.example.bamincloneui.presentation.adapters.delivery.BannerPagerRecyclerAdapter
-import com.example.bamincloneui.presentation.adapters.delivery.GridRecyclerViewAdapter
-import com.example.bamincloneui.presentation.adapters.delivery.DeliveryItemRecyclerViewAdapter
-import com.example.bamincloneui.presentation.adapters.delivery.SubBannerRecyclerAdapter
+import com.example.bamincloneui.presentation.adapters.delivery.*
 import com.example.bamincloneui.presentation.fakeBannerList
 import com.example.bamincloneui.presentation.fakeDeliveryItemList
 import com.example.bamincloneui.presentation.fakeGridItemList
 import com.example.bamincloneui.presentation.fakeSubBannerList
 import com.example.bamincloneui.presentation.fragment.main.viewmodels.ADeliveryViewModel
 import com.example.bamincloneui.presentation.interaction.BannerInteraction
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -55,8 +49,9 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
 
     private lateinit var bannerAdapter: BannerPagerRecyclerAdapter
     private lateinit var subBannerAdapter: SubBannerRecyclerAdapter
-    private lateinit var gridMenuRecyclerViewAdapter: GridRecyclerViewAdapter
+    private lateinit var gridMenuRecyclerAdapter: GridMenuRecyclerAdapter
     private lateinit var deliveryItemRecyclerViewAdapter: DeliveryItemRecyclerViewAdapter
+    private lateinit var filterRecyclerViewAdapter: FilterRecyclerAdapter
 
     private var totalBannerCount = 0
     private var totalSubBannerCount = 0
@@ -105,7 +100,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         }
 
         viewModel.gridMenuItems.observe(viewLifecycleOwner) {
-            gridMenuRecyclerViewAdapter.setGridItems(it)
+            gridMenuRecyclerAdapter.setGridItems(it)
         }
 
         viewModel.bannerItemPosition.observe(viewLifecycleOwner) {
@@ -116,22 +111,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             deliveryItemRecyclerViewAdapter.setListItem(it)
         }
 
-        val tabTexts = arrayOf("배달팁 낮은 순", "기본순", "주문 많은 순", "별점 높은 순", "가까운 순", "찜 많은 순", "최소주문금액", "기타")
-
-        binding!!.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.e("asdfasdf", tab?.position.toString())
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                TODO("Not yet implemented")
-            }
-
-        })
+        initFilterMenuRecyclerView()
 
         autoScrollBannerItem()
     }
@@ -186,10 +166,10 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
 
     private fun initGridMenuRecyclerView() {
         binding!!.recyclerViewGridMenus.apply {
-            gridMenuRecyclerViewAdapter = GridRecyclerViewAdapter()
+            gridMenuRecyclerAdapter = GridMenuRecyclerAdapter()
             layoutManager =
                 GridLayoutManager(requireContext(), Common.DELIVERY_FRAGMENT_GRID_MENU_ROW)
-            adapter = gridMenuRecyclerViewAdapter
+            adapter = gridMenuRecyclerAdapter
         }
     }
 
@@ -199,6 +179,14 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             deliveryItemRecyclerViewAdapter = DeliveryItemRecyclerViewAdapter()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = deliveryItemRecyclerViewAdapter
+        }
+    }
+
+    private fun initFilterMenuRecyclerView(){
+        binding!!.recyclerViewFilter.apply {
+            filterRecyclerViewAdapter = FilterRecyclerAdapter()
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = filterRecyclerViewAdapter
         }
     }
 

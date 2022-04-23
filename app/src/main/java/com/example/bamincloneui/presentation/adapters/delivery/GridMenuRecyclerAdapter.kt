@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bamincloneui.R
 import com.example.bamincloneui.data.model.DeliveryGridItem
 
-class GridRecyclerViewAdapter : RecyclerView.Adapter<GridRecyclerViewAdapter.GridItemVIewHolder>() {
+class GridMenuRecyclerAdapter : RecyclerView.Adapter<GridMenuRecyclerAdapter.GridItemVIewHolder>() {
 
     private var gridItemMenus: List<DeliveryGridItem>? = null
 

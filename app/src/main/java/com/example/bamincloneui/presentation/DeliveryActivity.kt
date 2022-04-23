@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bamincloneui.R
 import com.example.bamincloneui.databinding.ActivityDeliveryBinding
-import com.example.bamincloneui.presentation.adapters.delivery.MainPagerAdapter
+import com.example.bamincloneui.presentation.adapters.MainPagerAdapter
 import com.example.bamincloneui.presentation.viewmodels.DeliveryViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

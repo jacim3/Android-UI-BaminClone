@@ -1,4 +1,4 @@
-package com.example.bamincloneui.presentation.adapters.delivery
+package com.example.bamincloneui.presentation.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
