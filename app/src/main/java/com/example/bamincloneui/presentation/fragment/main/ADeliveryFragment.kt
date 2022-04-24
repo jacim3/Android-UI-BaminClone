@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bamincloneui.constants.Common
 import com.example.bamincloneui.data.model.BannerItem
@@ -182,12 +182,18 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         }
     }
 
-    private fun initFilterMenuRecyclerView(){
+    private fun initFilterMenuRecyclerView() {
+
         binding!!.recyclerViewFilter.apply {
-            filterRecyclerViewAdapter = FilterRecyclerAdapter()
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            filterRecyclerViewAdapter =
+                FilterRecyclerAdapter(this.layoutManager as LinearLayoutManager)
             adapter = filterRecyclerViewAdapter
         }
+
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding!!.recyclerViewFilter)
     }
 
     @SuppressLint("SetTextI18n")
