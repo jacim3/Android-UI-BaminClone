@@ -5,18 +5,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bamincloneui.constants.Common
-import com.example.bamincloneui.data.model.BannerItem
 import com.example.bamincloneui.databinding.FragmentADeliveryBinding
 import com.example.bamincloneui.presentation.adapters.delivery.*
 import com.example.bamincloneui.presentation.fakeBannerList
@@ -24,21 +22,16 @@ import com.example.bamincloneui.presentation.fakeDeliveryItemList
 import com.example.bamincloneui.presentation.fakeGridItemList
 import com.example.bamincloneui.presentation.fakeSubBannerList
 import com.example.bamincloneui.presentation.fragment.main.viewmodels.ADeliveryViewModel
-import com.example.bamincloneui.presentation.interaction.BannerInteraction
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [delivery_1.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ADeliveryFragment : Fragment(), BannerInteraction {
+class ADeliveryFragment : Fragment(){
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -91,6 +84,19 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         initGridMenuRecyclerView()
         initDeliveryItemListRecyclerView()
 
+        setUpdateTest()
+
+        viewModel.resultFilterData.observe(viewLifecycleOwner) {
+            Log.e("Result ",it.toString() )
+            Log.e("Result ", (it["etc"] as BooleanArray).contentToString())
+
+        }
+
+        initFilterMenuRecyclerView()
+        autoScrollBannerItem()
+    }
+
+    private fun setUpdateTest() {
         viewModel.bannerItemList.observe(viewLifecycleOwner) {
             bannerAdapter.setImageList(it)
         }
@@ -111,14 +117,11 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             deliveryItemRecyclerViewAdapter.setListItem(it)
         }
 
-        initFilterMenuRecyclerView()
-
-        autoScrollBannerItem()
     }
 
     private fun initBannerPager() {
 
-        bannerAdapter = BannerPagerRecyclerAdapter(this@ADeliveryFragment)
+        bannerAdapter = BannerPagerRecyclerAdapter()
 
         binding!!.bannerPager.apply {
             adapter = bannerAdapter
@@ -173,7 +176,6 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
         }
     }
 
-
     private fun initDeliveryItemListRecyclerView() {
         binding!!.recyclerViewDeliveryItem.apply {
             deliveryItemRecyclerViewAdapter = DeliveryItemRecyclerViewAdapter()
@@ -188,7 +190,7 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             filterRecyclerViewAdapter =
-                FilterRecyclerAdapter(this.layoutManager as LinearLayoutManager)
+                FilterRecyclerAdapter(this.layoutManager as LinearLayoutManager, viewModel.resultFilterData)
             adapter = filterRecyclerViewAdapter
         }
 
@@ -233,12 +235,5 @@ class ADeliveryFragment : Fragment(), BannerInteraction {
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-    override fun onBannerItemClicked(bannerItem: BannerItem) {
-        Toast.makeText(requireContext(), "배너 클릭", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onClick(p0: View?) {
     }
 }

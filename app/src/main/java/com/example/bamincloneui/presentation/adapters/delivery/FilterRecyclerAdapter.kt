@@ -1,5 +1,6 @@
 package com.example.bamincloneui.presentation.adapters.delivery
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bamincloneui.R
@@ -19,15 +21,18 @@ import com.example.bamincloneui.constants.MinPrice
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.stream.Collectors
 
-class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
+class FilterRecyclerAdapter(
+    private val manager: LinearLayoutManager,
+    private val resultFilterData: MutableLiveData<Map<String, Any>>
+) :
     RecyclerView.Adapter<FilterRecyclerAdapter.FilterViewHolder>() {
 
     private val menus = FILTER.values().toMutableList().stream().filter {
         it.enabled
     }.collect(Collectors.toList())
 
-    private var resetButton = FILTER.values()[0]
     private var buttonCheckList = Array(Common.DELIVERY_FILTER_COUNT) { false }     // 버튼 활성화 체크 변수.
+    private val DIALOG_TITLE_ETC = "기타 필터"
 
     private val priceFilters =
         arrayOf("전체", "5,000원 이하", "10,000원 이하", "12,000원 이하", "15,000원 이하", "20,000원 이하")
@@ -39,9 +44,8 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
 
     private val resultMap = HashMap<String, Any>().apply {
         this["Status"] = FILTER.BASIC.text
-        this["MinPrice"] = "전체"
+        this["MinPrice"] = 0
     }
-    // private var buttonHolders = emptyList<FilterViewHolder>().toMutableList()
 
     class FilterViewHolder(
         itemView: View,
@@ -59,7 +63,6 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
         val unClicked = drawable1
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterViewHolder {
         return FilterViewHolder(
             LayoutInflater.from(parent.context)
@@ -71,9 +74,6 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
     }
 
     override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
-        Log.e("onBIndViewHodler", "onBVindViewHolder")
-        Log.e("item : ", menus[position].text)
-        Log.e("item : ", menus[position].name)
 
         // TODO RecyclerView 는 해당 뷰가 보이지 않게 되었다 다시 보이게 되면, 해당 뷰 인스턴스를 재 생성하는것이 아니라,
         // TODO 기존에 생성된 인스턴스를 재사용 하므로, 리스트의 형태가 일괄적이지 않은 경우, 이를 리셋해 주어야 한다.
@@ -108,9 +108,6 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
         holder.buttonArea.setOnClickListener {
 
             setButtonInteraction(holder.adapterPosition, holder, it)
-            menus.stream().forEach { isa ->
-                Log.e("!@#!@#!@#", isa.text)
-            }
         }
 
         if (isInitialized && item.text == FILTER.BASIC.text) {
@@ -123,6 +120,74 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
 
     override fun getItemCount(): Int {
         return menus.size
+    }
+
+    //==============================================================================================
+
+    // 생성된 버튼리스트에 대한 클릭관련 이벤트 정의
+    private fun setButtonInteraction(position: Int, holder: FilterViewHolder, it: View) {
+
+        val buttonName = findButtonName(it)
+
+        // 이전에 누른 버튼과 현재버튼이 다른 경우에만 수행
+        if (prevButton != it) {
+            when (buttonName) {
+
+                FILTER.LOW_TIPS.text, FILTER.BASIC.text, FILTER.HIGH_ORDER.text,
+                FILTER.HIGH_STARS.text, FILTER.NEAR_LOCATION.text, FILTER.HIGH_FAVORITE.text -> {
+                    holder.buttonArea.background = holder.clicked
+                    prevButton?.background = holder.unClicked
+                    buttonCheckList[position] = false
+                    val offset = 100
+                    manager.scrollToPositionWithOffset(position, offset)
+                    resultMap["Status"] = buttonName
+                }
+            }
+        }
+
+        when (buttonName) {
+
+            FILTER.RESET.text -> {
+                resultMap["Status"] = FILTER.BASIC.text
+                // 기타항목 필터 아이템 지우기
+                for (i in Etc.values()) {
+                    etcChecks[i.position] = false
+                    deleteEtcItems(i.text)
+                }
+
+                val pos = getPositionByText(FILTER.MIN_PRICE.text)
+                val tmp = menus[pos]
+                menus.removeAt(pos)
+                notifyItemRemoved(pos)
+                menus.add(pos, tmp)
+                notifyItemInserted(pos)
+                // 최소주문 금액 필터 아이템 지우기
+                handleMinPrice(MinPrice.ALL.position, holder)
+                basicButton?.performClick()
+            }
+
+            FILTER.MIN_PRICE.text, MinPrice.UNDER_5000.text, MinPrice.UNDER_10000.text, MinPrice.UNDER_12000.text,
+            MinPrice.UNDER_15000.text, MinPrice.UNDER_20000.text -> {
+                setMinPriceWithDialog(holder)
+                val offset = 100
+                manager.scrollToPositionWithOffset(position, offset)
+            }
+
+            FILTER.ETC.text -> {
+                setEtcWithDialog(holder)
+                val offset = 100
+                manager.scrollToPositionWithOffset(position, offset)
+            }
+
+            FILTER.COUPON.text, FILTER.TAKEOUT.text, FILTER.SELF_MEAL.text, FILTER.BOOKING.text -> {
+                deleteEtcItems(buttonName)
+            }
+
+            else -> {
+                prevButton = it
+            }
+        }
+        getFilterResult()
     }
 
     private fun findButtonName(parentView: View) =
@@ -157,105 +222,7 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
         }
     }
 
-    /*
-         1. '초기화' 를 누르면 '기본순' 으로 이동.
-         2. '최소주문' 과 '기타' 는 복수선택 가능.
-         3. '기본순' 을 제외한 모든메뉴 클릭시 초기화 메뉴 생성.
-
-         4. 쿠폰 포장/방문 1인분 예약가능 버튼은 '기타' 앞에 차럐로 생성.
-         5.
-    */
-
-
-    private fun setButtonInteraction(position: Int, holder: FilterViewHolder, it: View) {
-
-        val buttonName = findButtonName(it)
-
-        // 눌렀단 버튼을 또 누를경우.
-        if (prevButton == it) {
-
-        }
-        // 다른 버튼을 누름
-        else {
-
-            when (buttonName) {
-
-                FILTER.LOW_TIPS.text, FILTER.BASIC.text, FILTER.HIGH_ORDER.text,
-                FILTER.HIGH_STARS.text, FILTER.NEAR_LOCATION.text, FILTER.HIGH_FAVORITE.text -> {
-                    holder.buttonArea.background = holder.clicked
-                    prevButton?.background = holder.unClicked
-                    buttonCheckList[position] = false
-                    val offset = 100
-                    manager.scrollToPositionWithOffset(position, offset)
-                    resultMap["Status"] = buttonName
-                }
-            }
-        }
-
-        when (buttonName) {
-
-            FILTER.RESET.text -> {
-                resultMap["Status"] = FILTER.BASIC.text
-                basicButton?.performClick()
-                removeResetButton()
-
-                // 기타항목 필터 아이템 지우기
-                for (i in Etc.values()) {
-                    etcChecks[i.position] = false
-                    deleteEtcItems(i.text)
-                }
-
-                // 최소주문 금액 필터 아이템 지우기
-                handleMinPrice(MinPrice.ALL.position, holder, buttonName)
-            }
-
-            FILTER.MIN_PRICE.text, MinPrice.UNDER_5000.text, MinPrice.UNDER_10000.text, MinPrice.UNDER_12000.text,
-            MinPrice.UNDER_15000.text, MinPrice.UNDER_20000.text -> {
-                setMinPriceWithDialog(holder, buttonName)
-                val offset = 100
-                manager.scrollToPositionWithOffset(position, offset)
-            }
-
-            FILTER.ETC.text -> {
-                setEtcWithDialog(holder)
-                val offset = 100
-                manager.scrollToPositionWithOffset(position, offset)
-            }
-
-            FILTER.COUPON.text, FILTER.TAKEOUT.text, FILTER.SELF_MEAL.text, FILTER.BOOKING.text -> {
-                deleteEtcItems(buttonName)
-            }
-
-            else -> {
-                prevButton = it
-            }
-        }
-        getResultWithSortItem()
-    }
-
-
-    private fun getResultWithSortItem() {
-        var buttonCheck = false
-        var etcCheck = false
-        var priceCheck = false
-
-
-        for (i in etcChecks)
-            if (i) {
-                etcCheck = true
-                break
-            }
-
-        if (resultMap["MinPrice"] != "전체") priceCheck = true
-
-        if (resultMap["Status"] != FILTER.BASIC.text) buttonCheck = true
-
-        if (!buttonCheck && !etcCheck && !priceCheck) removeResetButton()
-        else addResetButton()
-
-        Log.e("result :", etcChecks.toString())
-        Log.e("result :", resultMap.toString())
-    }
+    //==================================== 기타 필터 Handler =========================================
 
     private fun setEtcWithDialog(holder: FilterViewHolder) {
 
@@ -263,23 +230,27 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
             .setMultiChoiceItems(etcFilters, etcChecks) { dialog, index, checked ->
 
             }.setOnCancelListener {
-
-                for (i in Etc.values()) {
-                    if (etcChecks[i.position]) {
-                        insertEtcItems(i.text)
-                    } else {
-                        deleteEtcItems(i.text)
-                    }
-                    if (etcChecks[i.position]) addResetButton()
-                }
+                handleEtcMenu()
             }.show()
     }
 
+    private fun handleEtcMenu() {
+        for (i in Etc.values()) {
+            if (etcChecks[i.position]) {
+                insertEtcItems(i.text)
+            } else {
+                deleteEtcItems(i.text)
+            }
+        }
+        getFilterResult()
+    }
 
+    // '기타' 필터메뉴는 중복선택이 가능하며 메뉴마다 우선순위가 존재하여, 이에 따라 별도의 처리를 해주어야 하므로
+    // 단순 반복문으로 처리할 수 없음
     private fun insertEtcItems(target: String) {
         var etcItem: FILTER? = null
-        when (target) {
 
+        when (target) {
             FILTER.COUPON.text -> {
                 if (getPositionByText("쿠폰") == -1) {
                     etcItem = FILTER.COUPON
@@ -331,110 +302,79 @@ class FilterRecyclerAdapter(private val manager: LinearLayoutManager) :
         }
     }
 
+    // 기타메뉴 제거에 따른 처리.
     private fun deleteEtcItems(target: String) {
-        when (target) {
-            FILTER.COUPON.text -> {
-                val couponPosition = getPositionByText(FILTER.COUPON.text)
-                if (couponPosition != -1) {
-                    menus.removeAt(couponPosition)
-                    notifyItemRemoved(couponPosition)
-                    etcChecks[Etc.COUPON.position] = false
-                }
-            }
-            FILTER.TAKEOUT.text -> {
-                val takeoutPosition = getPositionByText(FILTER.TAKEOUT.text)
-                if (takeoutPosition != -1) {
-                    menus.removeAt(takeoutPosition)
-                    notifyItemRemoved(takeoutPosition)
-                    etcChecks[Etc.TAKEOUT.position] = false
-                }
-            }
-            FILTER.SELF_MEAL.text -> {
-                val selfMealPosition = getPositionByText(FILTER.SELF_MEAL.text)
-                if (selfMealPosition != -1) {
-                    menus.removeAt(selfMealPosition)
-                    notifyItemRemoved(selfMealPosition)
-                    etcChecks[Etc.SELF_MEAL.position] = false
-                }
-            }
-            FILTER.BOOKING.text -> {
-                val bookingPosition = getPositionByText(FILTER.BOOKING.text)
-                if (bookingPosition != -1) {
-                    menus.removeAt(bookingPosition)
-                    notifyItemRemoved(bookingPosition)
-                    etcChecks[Etc.BOOKING.position] = false
+
+        for (i in Etc.values()) {
+            if (target == i.text) {
+                val position = getPositionByText(target)
+                if (position != -1) {
+                    menus.removeAt(position)
+                    notifyItemRemoved(position)
+                    etcChecks[i.position] = false
                 }
             }
         }
     }
 
-    private fun setMinPriceWithDialog(holder: FilterViewHolder, buttonName: String) {
-        holder.dialogBuilder.setTitle("최소 주문").setItems(priceFilters) { dialog, index ->
-            run {
+    //=================================== 최소주문금액 Handler =======================================
 
-                handleMinPrice(index, holder, buttonName)
+    private fun setMinPriceWithDialog(holder: FilterViewHolder) {
+        holder.dialogBuilder.setTitle(FILTER.MIN_PRICE.text)
+            .setItems(priceFilters) { dialog, index ->
+                run {
 
-                if (index == 0) removeResetButton()
-                else addResetButton()
-            }
-        }.show()
+                    handleMinPrice(index, holder)
+                }
+            }.show()
     }
 
-    private fun handleMinPrice(statusCode: Int, holder: FilterViewHolder, buttonName: String) {
+    @SuppressLint("SetTextI18n")
+    private fun handleMinPrice(statusCode: Int, holder: FilterViewHolder) {
 
         for (i in MinPrice.values()) {
             if (i.position == statusCode) {
-                if (i.position == MinPrice.ALL.position)
+                if (i.position == MinPrice.ALL.position) {
                     holder.buttonArea.background = holder.unClicked
-                else
+                    holder.buttonText.text = FILTER.MIN_PRICE.text
+                    resultMap["MinPrice"] = 0
+                    break
+                } else {
                     holder.buttonArea.background = holder.clicked
-
-                holder.buttonText.text = FILTER.MIN_PRICE.text
-                resultMap["MinPrice"] = buttonName
+                    holder.buttonText.text = i.text
+                    resultMap["MinPrice"] = i.price
+                    break
+                }
             }
         }
-
-/*        when (statusCode) {
-            MinPrice.ALL.position -> {
-                holder.buttonArea.background = holder.unClicked
-                holder.buttonText.text = FILTER.MIN_PRICE.text
-                resultMap["MinPrice"] = buttonName
-            }
-            MinPrice.UNDER_5000.position -> {
-                holder.buttonArea.background = holder.clicked
-                holder.buttonText.text = MinPrice.UNDER_5000.text
-                resultMap["MinPrice"] = buttonName
-            }
-            MinPrice.UNDER_10000.position -> {
-                holder.buttonArea.background = holder.clicked
-                holder.buttonText.text = MinPrice.UNDER_10000.text
-                resultMap["MinPrice"] = buttonName
-            }
-            MinPrice.UNDER_12000.position -> {
-                holder.buttonArea.background = holder.clicked
-                holder.buttonText.text = MinPrice.UNDER_12000.text
-                resultMap["MinPrice"] = buttonName
-            }
-            MinPrice.UNDER_15000.position -> {
-                holder.buttonArea.background = holder.clicked
-                holder.buttonText.text = MinPrice.UNDER_15000.text
-                resultMap["MinPrice"] = buttonName
-            }
-            MinPrice.UNDER_20000.position -> {
-                holder.buttonArea.background = holder.clicked
-                holder.buttonText.text = MinPrice.UNDER_20000.text
-                resultMap["MinPrice"] = buttonName
-            }
-        }*/
+        getFilterResult()
     }
 
-    companion object {
-        const val COUPON = 0
-        const val TAKEOUT = 1
-        const val SELF_MEAL = 2
-        const val RESERVATION = 3
+    //===================================== Result Handler =========================================
 
-        private const val DIALOG_TITLE_ETC = "기타 필터"
-        private const val DIALOG_TITLE_MIN_PRICE = "최소주문금액"
+    // 결과 필터 데이터셋을 체크하여, 변경이 이루어졌을때의 처리를 담당.
+    private fun getFilterResult() {
+        var buttonCheck = false
+        var etcCheck = false
+        var priceCheck = false
+
+        // 다른 옵션이 선택되었는지 여부 체크
+        for (i in etcChecks)
+            if (i) {
+                etcCheck = true
+                break
+            }
+
+        // 최소가격 체크
+        if (resultMap["MinPrice"] != 0) priceCheck = true
+        // '기본순' '최소주문' '기타' 필터버튼 외 다른버튼이 선택되었는지 여부 체크.
+        if (resultMap["Status"] != FILTER.BASIC.text) buttonCheck = true
+
+        // '초기하' 외 다른옵션이 선택된 경우 리셋버튼 추가. 그 외에는 리셋버튼 제거.
+        if (!buttonCheck && !etcCheck && !priceCheck) removeResetButton()
+        else addResetButton()
+
+        resultMap["etc"] = etcChecks
+        resultFilterData.postValue(resultMap)
     }
 }

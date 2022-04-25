@@ -27,4 +27,6 @@ class ADeliveryViewModel : ViewModel(){
 
     val deliveryItemList = MutableLiveData<List<DeliveryListItem>>()
 
+    val resultFilterData = MutableLiveData<Map<String, Any>>()
+
 }

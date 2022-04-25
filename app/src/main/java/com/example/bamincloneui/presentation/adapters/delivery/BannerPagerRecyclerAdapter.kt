@@ -7,9 +7,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bamincloneui.R
 import com.example.bamincloneui.data.model.BannerItem
-import com.example.bamincloneui.presentation.interaction.BannerInteraction
 
-class BannerPagerRecyclerAdapter(private val interaction:BannerInteraction) : RecyclerView.Adapter<BannerPagerRecyclerAdapter.BannerViewHolder>() {
+class BannerPagerRecyclerAdapter() : RecyclerView.Adapter<BannerPagerRecyclerAdapter.BannerViewHolder>() {
 
     private var bannerItemList: List<BannerItem>? = null
 
@@ -29,7 +28,7 @@ class BannerPagerRecyclerAdapter(private val interaction:BannerInteraction) : Re
 
             holder.imageViewBanner.setImageResource(bannerItem.image)
             holder.imageViewBanner.setOnClickListener {
-                interaction.onBannerItemClicked(bannerItem)
+
             }
         }
     }

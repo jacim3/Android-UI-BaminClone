@@ -27,13 +27,13 @@ enum class FILTER(val code:Int, val text:String, val icon:Int, val iconPosition:
     ETC(12, "기타", R.drawable.ic_baseline_settings_24, "left", true),
 }
 
-enum class MinPrice(val position:Int, val text:String) {
-    ALL(0, "전체"),
-    UNDER_5000(1, "최소주문 5,000원 이하"),
-    UNDER_10000(2, "최소주문 10,000원 이하"),
-    UNDER_12000(3, "최소주문 12,000원 이하"),
-    UNDER_15000(4, "최소주문 15,000원 이하"),
-    UNDER_20000(5, "최소주문 20,000원 이하"),
+enum class MinPrice(val position:Int, val text:String, val price:Int) {
+    ALL(0, "전체", 0),
+    UNDER_5000(1, "최소주문 5,000원 이하", 5000),
+    UNDER_10000(2, "최소주문 10,000원 이하", 10000),
+    UNDER_12000(3, "최소주문 12,000원 이하", 12000),
+    UNDER_15000(4, "최소주문 15,000원 이하", 15000),
+    UNDER_20000(5, "최소주문 20,000원 이하", 20000),
 }
 
 enum class Etc(val position:Int, val text:String){
