@@ -34,6 +34,7 @@ class DeliveryActivity : AppCompatActivity() {
             isUserInputEnabled = false
         }
 
+
         val tabTexts = arrayOf("배달", "배민1", "포장", "쇼핑라이브", "선물하기", "전국별미")
 
         TabLayoutMediator(

@@ -31,7 +31,6 @@ class FilterRecyclerAdapter(
         it.enabled
     }.collect(Collectors.toList())
 
-    private var buttonCheckList = Array(Common.DELIVERY_FILTER_COUNT) { false }     // 버튼 활성화 체크 변수.
     private val DIALOG_TITLE_ETC = "기타 필터"
 
     private val priceFilters =
@@ -39,8 +38,10 @@ class FilterRecyclerAdapter(
     private val etcFilters = arrayOf("쿠폰", "포장/방문", "1인분", "예약가능")
     private val etcChecks = booleanArrayOf(false, false, false, false)
     private var prevButton: View? = null
-    private var isInitialized = true
+    private var isInitialized1 = true
+    private var isInitialized2 = true
     private var basicButton: View? = null
+    private var minPriceButton: View? = null
 
     private val resultMap = HashMap<String, Any>().apply {
         this["Status"] = FILTER.BASIC.text
@@ -110,11 +111,16 @@ class FilterRecyclerAdapter(
             setButtonInteraction(holder.adapterPosition, holder, it)
         }
 
-        if (isInitialized && item.text == FILTER.BASIC.text) {
-            isInitialized = false
+        if (isInitialized1 && item.text == FILTER.BASIC.text) {
+            isInitialized1 = false
             holder.buttonArea.background = holder.clicked
             prevButton = holder.buttonArea
             basicButton = holder.buttonArea
+        }
+
+        if (isInitialized2 && item.text == FILTER.MIN_PRICE.text) {
+            isInitialized2 = false
+            minPriceButton = holder.buttonArea
         }
     }
 
@@ -137,7 +143,6 @@ class FilterRecyclerAdapter(
                 FILTER.HIGH_STARS.text, FILTER.NEAR_LOCATION.text, FILTER.HIGH_FAVORITE.text -> {
                     holder.buttonArea.background = holder.clicked
                     prevButton?.background = holder.unClicked
-                    buttonCheckList[position] = false
                     val offset = 100
                     manager.scrollToPositionWithOffset(position, offset)
                     resultMap["Status"] = buttonName
@@ -146,24 +151,28 @@ class FilterRecyclerAdapter(
         }
 
         when (buttonName) {
-
             FILTER.RESET.text -> {
-                resultMap["Status"] = FILTER.BASIC.text
                 // 기타항목 필터 아이템 지우기
                 for (i in Etc.values()) {
                     etcChecks[i.position] = false
                     deleteEtcItems(i.text)
                 }
 
-                val pos = getPositionByText(FILTER.MIN_PRICE.text)
-                val tmp = menus[pos]
-                menus.removeAt(pos)
-                notifyItemRemoved(pos)
-                menus.add(pos, tmp)
-                notifyItemInserted(pos)
-                // 최소주문 금액 필터 아이템 지우기
-                handleMinPrice(MinPrice.ALL.position, holder)
-                basicButton?.performClick()
+                // 최소주문 리셋
+                minPriceButton?.post {
+                    minPriceButton?.background = holder.unClicked
+                    minPriceButton?.findViewById<AppCompatTextView>(R.id.textViewFilterText)?.text = FILTER.MIN_PRICE.text
+                }
+
+                basicButton?.post {
+                    basicButton?.performClick()
+                }
+
+                // 결과데이터 리셋
+                resultMap.apply {
+                    this["Status"] = FILTER.BASIC.text
+                    this["MinPrice"] = 0
+                }
             }
 
             FILTER.MIN_PRICE.text, MinPrice.UNDER_5000.text, MinPrice.UNDER_10000.text, MinPrice.UNDER_12000.text,
@@ -252,11 +261,14 @@ class FilterRecyclerAdapter(
 
         when (target) {
             FILTER.COUPON.text -> {
-                if (getPositionByText("쿠폰") == -1) {
+
+                val position = getPositionByText("쿠폰")
+                if (position == -1) {
                     etcItem = FILTER.COUPON
-                    val couponPosition =
+/*                    val couponPosition =
                         if (isResetButtonVisible()) Common.POSITION_WITH_RESET
-                        else Common.POSITION_WITHOUT_RESET
+                        else Common.POSITION_WITHOUT_RESET*/
+                    val couponPosition = getPositionByText(FILTER.HIGH_FAVORITE.text)+2 // 쿠폰은 최소주문 바로 뒤.
                     menus.add(couponPosition, etcItem)    // 맨끝 위치의 항목을 한칸 밀어내고 삽입
                     notifyItemInserted(couponPosition)    // 맨끝의 앞자리에 삽입되므로 여기를 새로고침
                 }
@@ -269,8 +281,9 @@ class FilterRecyclerAdapter(
                     val couponPosition = getPositionByText("쿠폰")
                     val takeoutPosition =
                         if (couponPosition == -1) {
-                            if (isResetButtonVisible()) Common.POSITION_WITH_RESET
-                            else Common.POSITION_WITHOUT_RESET
+                            getPositionByText(FILTER.HIGH_FAVORITE.text)+2
+/*                            if (isResetButtonVisible()) Common.POSITION_WITH_RESET
+                            else Common.POSITION_WITHOUT_RESET*/
                         } else
                             couponPosition + 1
                     menus.add(takeoutPosition, etcItem)
@@ -313,6 +326,7 @@ class FilterRecyclerAdapter(
                     notifyItemRemoved(position)
                     etcChecks[i.position] = false
                 }
+                break
             }
         }
     }

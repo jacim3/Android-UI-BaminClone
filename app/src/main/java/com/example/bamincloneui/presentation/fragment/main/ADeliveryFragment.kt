@@ -8,19 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
+import com.example.bamincloneui.R
 import com.example.bamincloneui.constants.Common
 import com.example.bamincloneui.databinding.FragmentADeliveryBinding
+import com.example.bamincloneui.presentation.*
 import com.example.bamincloneui.presentation.adapters.delivery.*
-import com.example.bamincloneui.presentation.fakeBannerList
-import com.example.bamincloneui.presentation.fakeDeliveryItemList
-import com.example.bamincloneui.presentation.fakeGridItemList
-import com.example.bamincloneui.presentation.fakeSubBannerList
 import com.example.bamincloneui.presentation.fragment.main.viewmodels.ADeliveryViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ import java.util.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class ADeliveryFragment : Fragment(){
+class ADeliveryFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -49,6 +49,8 @@ class ADeliveryFragment : Fragment(){
     private var totalBannerCount = 0
     private var totalSubBannerCount = 0
     private var currentBannerPosition = 0
+
+    private var currentScrollYPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +75,7 @@ class ADeliveryFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO 아이템 초기화. -> 원래는 서버에서 초기화 되어야 한다.
+        // TODO 아이템 데이터 초기화. -> 원래는 서버에서 초기화 되어야 한다.
         viewModel.bannerItemList.value = fakeBannerList
         viewModel.subBannerItemList.value = fakeSubBannerList
         viewModel.gridMenuItems.value = fakeGridItemList
@@ -86,10 +88,15 @@ class ADeliveryFragment : Fragment(){
 
         setUpdateTest()
 
+        // TODO 필터를 적용시켰을 경우, 서버에서 쿼리를 통하여 데이터를 새롭게 받아와서 세팅해야 함.
         viewModel.resultFilterData.observe(viewLifecycleOwner) {
-            Log.e("Result ",it.toString() )
-            Log.e("Result ", (it["etc"] as BooleanArray).contentToString())
-
+            Log.e("Result ", it.toString())
+            Toast.makeText(
+                requireContext(),
+                "선택 : ${it["Status"]}, 최소금액 : ${it["MinPrice"]}\n " +
+                        "기타선택 : ${(it["etc"] as BooleanArray).contentToString()}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         initFilterMenuRecyclerView()
@@ -136,6 +143,7 @@ class ADeliveryFragment : Fragment(){
                 super.onPageSelected(position)
                 isBannerAutoPaging = true
 
+                viewModel.bannerItemPosition.value = position
                 Handler(Looper.getMainLooper()).post {
                     binding!!.textViewBannerCursor.text = "${position + 1} / 5 "
                 }
@@ -190,7 +198,10 @@ class ADeliveryFragment : Fragment(){
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             filterRecyclerViewAdapter =
-                FilterRecyclerAdapter(this.layoutManager as LinearLayoutManager, viewModel.resultFilterData)
+                FilterRecyclerAdapter(
+                    this.layoutManager as LinearLayoutManager,
+                    viewModel.resultFilterData
+                )
             adapter = filterRecyclerViewAdapter
         }
 
